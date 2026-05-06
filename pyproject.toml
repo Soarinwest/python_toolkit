@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "geo-daily-tools"
+version = "0.1.0"
+description = "Reusable Python utilities for geospatial data inspection, validation, QA/QC, and modeling prep."
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "Soren Donisvitch" }]
+dependencies = [
+    "pandas>=2.0",
+    "numpy>=1.24",
+    "geopandas>=0.14",
+    "shapely>=2.0",
+    "pyproj>=3.6",
+    "scikit-learn>=1.3",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "ruff>=0.4",
+    "black>=24.0",
+    "ipykernel>=6.0",
+]
+io = [
+    "pyarrow>=14.0",
+    "openpyxl>=3.1",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.black]
+line-length = 100
+
+[tool.ruff]
+line-length = 100
+select = ["E", "F", "I", "B", "UP"]
+ignore = []

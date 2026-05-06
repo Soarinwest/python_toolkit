@@ -1,0 +1,80 @@
+"""Small sample datasets for examples and CoderPad practice."""
+
+
+def messy_sensor_records() -> list[dict]:
+    """Return messy geospatial sensor records."""
+    return [
+        {
+            "obs_id": "OBS-0142",
+            "lat": 44.51,
+            "lon": -73.21,
+            "sensor_type": "type_a",
+            "reading": 32.4,
+            "timestamp": "2024-06-12T14:22:00Z",
+            "tile_id": "tile_001",
+        },
+        {},
+        {
+            "obs_id": None,
+            "lat": 44.52,
+            "lon": -73.22,
+            "sensor_type": "type_a",
+            "reading": 18.2,
+            "timestamp": "2024-06-12T14:23:00Z",
+            "tile_id": "tile_001",
+        },
+        {
+            "obs_id": "OBS-0143",
+            "lat": 91.0,
+            "lon": -73.23,
+            "sensor_type": "type_b",
+            "reading": 21.1,
+            "timestamp": "2024-06-12T14:24:00Z",
+            "tile_id": "tile_002",
+        },
+        {
+            "obs_id": "OBS-0144",
+            "lat": 44.53,
+            "lon": -181.0,
+            "sensor_type": "type_b",
+            "reading": 22.0,
+            "timestamp": "2024-06-12T14:25:00Z",
+            "tile_id": "tile_002",
+        },
+        {
+            "obs_id": "OBS-0145",
+            "lat": 44.54,
+            "lon": -73.24,
+            "sensor_type": "type_a",
+            "reading": None,
+            "timestamp": "2024-06-12T14:26:00Z",
+            "tile_id": "tile_003",
+        },
+        {
+            "obs_id": "OBS-0146",
+            "lat": 44.55,
+            "lon": -73.25,
+            "sensor_type": "type_c",
+            "reading": -3.2,
+            "timestamp": "2024-06-12T14:27:00Z",
+            "tile_id": "tile_003",
+        },
+        {
+            "obs_id": "OBS-0147",
+            "lat": "44.56",
+            "lon": "-73.26",
+            "sensor_type": "type_c",
+            "reading": "40.1",
+            "timestamp": "2024-06-12T14:28:00Z",
+            "tile_id": "tile_004",
+        },
+        {
+            "obs_id": "   ",
+            "lat": 44.57,
+            "lon": -73.27,
+            "sensor_type": "type_a",
+            "reading": 11.0,
+            "timestamp": "2024-06-12T14:29:00Z",
+            "tile_id": "tile_004",
+        },
+    ]
