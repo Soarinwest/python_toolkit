@@ -56,3 +56,81 @@ def reproject_for_metric_ops(gdf: gpd.GeoDataFrame, target_crs: str) -> gpd.GeoD
     if gdf.crs is None:
         raise ValueError("GeoDataFrame has no CRS. Set CRS before reprojecting.")
     return gdf.to_crs(target_crs)
+
+
+def require_crs(gdf: gpd.GeoDataFrame, expected_crs: str | None = None) -> gpd.GeoDataFrame:
+    """Raise if gdf has no CRS, or if it doesn't match expected_crs."""
+    if gdf.crs is None:
+        raise ValueError("GeoDataFrame has no CRS set.")
+    if expected_crs is not None and str(gdf.crs) != str(gpd.GeoSeries([], crs=expected_crs).crs):
+        raise ValueError(f"Expected CRS {expected_crs}, got {gdf.crs}.")
+    return gdf
+
+
+def reproject_if_needed(gdf: gpd.GeoDataFrame, target_crs: str) -> gpd.GeoDataFrame:
+    """Return gdf reprojected to target_crs, or unchanged if already there."""
+    if gdf.crs is None:
+        raise ValueError("GeoDataFrame has no CRS. Set CRS before reprojecting.")
+    target = gpd.GeoSeries([], crs=target_crs).crs
+    if gdf.crs == target:
+        return gdf
+    return gdf.to_crs(target_crs)
+
+
+def repair_invalid_geometries(gdf: gpd.GeoDataFrame) -> tuple[gpd.GeoDataFrame, dict[str, int]]:
+    """Run make_valid on invalid geometries; return (repaired_gdf, counts)."""
+    invalid_before = int((~gdf.geometry.is_valid).sum())
+    out = gdf.copy()
+    invalid_mask = ~out.geometry.is_valid
+    out.loc[invalid_mask, out.geometry.name] = out.loc[invalid_mask, out.geometry.name].make_valid()
+    invalid_after = int((~out.geometry.is_valid).sum())
+    return out, {
+        "invalid_before": invalid_before,
+        "invalid_after": invalid_after,
+        "repaired": invalid_before - invalid_after,
+    }
+
+
+def geometry_type_summary(gdf: gpd.GeoDataFrame) -> pd.Series:
+    """Return counts by geometry type (Point, Polygon, etc.)."""
+    return gdf.geometry.geom_type.value_counts(dropna=False).rename("n")
+
+
+def bounds_summary(gdf: gpd.GeoDataFrame) -> dict[str, float | str | None]:
+    """Return bounding box and CRS for a GeoDataFrame."""
+    if gdf.empty:
+        return {"crs": str(gdf.crs) if gdf.crs else None,
+                "minx": None, "miny": None, "maxx": None, "maxy": None}
+    minx, miny, maxx, maxy = gdf.total_bounds
+    return {
+        "crs": str(gdf.crs) if gdf.crs else None,
+        "minx": float(minx),
+        "miny": float(miny),
+        "maxx": float(maxx),
+        "maxy": float(maxy),
+    }
+
+
+def nearest_neighbor_join(
+    left: gpd.GeoDataFrame,
+    right: gpd.GeoDataFrame,
+    distance_col: str = "distance",
+    max_distance: float | None = None,
+) -> gpd.GeoDataFrame:
+    """Attach the nearest right-feature to each left row.
+
+    Both inputs must share a CRS. For meaningful distance values, use a
+    projected CRS (meters/feet) — not EPSG:4326 degrees.
+    """
+    if left.crs is None or right.crs is None:
+        raise ValueError("Both GeoDataFrames must have a CRS set.")
+    if left.crs != right.crs:
+        raise ValueError(f"CRS mismatch: {left.crs} vs {right.crs}. Reproject first.")
+
+    return gpd.sjoin_nearest(
+        left,
+        right,
+        how="left",
+        distance_col=distance_col,
+        max_distance=max_distance,
+    )

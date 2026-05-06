@@ -1,21 +1,91 @@
 """Reusable Python utilities for geospatial QA/QC and modeling prep."""
 
-from geo_daily_tools.inspection import quick_inspect, missingness_report, duplicate_report
-from geo_daily_tools.validation import validate_sensor_records, add_drop_reason, drop_summary
-from geo_daily_tools.geo_validation import points_from_latlon, geometry_quality_report, filter_bbox
-from geo_daily_tools.modeling import prepare_model_inputs, group_train_test_split, feature_missingness_report
+from geo_daily_tools.inspection import (
+    categorical_summary,
+    categorical_value_counts,
+    column_overview,
+    dtype_summary,
+    duplicate_report,
+    grouped_numeric_summary,
+    missingness_report,
+    quick_inspect,
+)
+from geo_daily_tools.validation import (
+    add_drop_reason,
+    coerce_numeric,
+    deduplicate_keep_best,
+    drop_summary,
+    ensure_columns,
+    flag_outliers_iqr,
+    range_check,
+    strip_string_columns,
+    valid_lat_lon_mask,
+    validate_sensor_records,
+    value_in_set_check,
+)
+from geo_daily_tools.geo_validation import (
+    bounds_summary,
+    filter_bbox,
+    geometry_quality_report,
+    geometry_type_summary,
+    nearest_neighbor_join,
+    points_from_latlon,
+    repair_invalid_geometries,
+    reproject_for_metric_ops,
+    reproject_if_needed,
+    require_crs,
+)
+from geo_daily_tools.modeling import (
+    check_group_leakage,
+    compare_distributions,
+    coordinate_grid_block,
+    feature_missingness_report,
+    group_train_test_split,
+    prepare_model_inputs,
+    random_train_test_split,
+    simple_group_holdout,
+)
 
 __all__ = [
+    # inspection
     "quick_inspect",
     "missingness_report",
     "duplicate_report",
+    "column_overview",
+    "dtype_summary",
+    "categorical_summary",
+    "categorical_value_counts",
+    "grouped_numeric_summary",
+    # validation
+    "ensure_columns",
+    "coerce_numeric",
+    "strip_string_columns",
+    "valid_lat_lon_mask",
     "validate_sensor_records",
     "add_drop_reason",
     "drop_summary",
+    "deduplicate_keep_best",
+    "flag_outliers_iqr",
+    "range_check",
+    "value_in_set_check",
+    # geo
     "points_from_latlon",
     "geometry_quality_report",
     "filter_bbox",
+    "reproject_for_metric_ops",
+    "require_crs",
+    "reproject_if_needed",
+    "repair_invalid_geometries",
+    "geometry_type_summary",
+    "bounds_summary",
+    "nearest_neighbor_join",
+    # modeling
     "prepare_model_inputs",
     "group_train_test_split",
+    "random_train_test_split",
     "feature_missingness_report",
+    "simple_group_holdout",
+    "check_group_leakage",
+    "compare_distributions",
+    "coordinate_grid_block",
 ]
