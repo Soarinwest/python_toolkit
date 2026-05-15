@@ -106,14 +106,22 @@ def grouped_numeric_summary(
     group_cols: str | list[str],
     value_cols: str | list[str],
 ) -> pd.DataFrame:
-    """Return count/mean/median/std/min/max per group for the given numeric columns."""
+    """Return count/mean/median/std/min/max per group for the given numeric columns.
+
+    Value columns are coerced via ``pd.to_numeric(errors='coerce')`` so the helper
+    works on object-typed columns straight from a messy DataFrame.
+    """
     if isinstance(group_cols, str):
         group_cols = [group_cols]
     if isinstance(value_cols, str):
         value_cols = [value_cols]
 
+    work = df[group_cols].copy()
+    for col in value_cols:
+        work[col] = pd.to_numeric(df[col], errors="coerce")
+
     aggs = ["count", "mean", "median", "std", "min", "max"]
-    out = df.groupby(group_cols, dropna=False)[value_cols].agg(aggs)
+    out = work.groupby(group_cols, dropna=False)[value_cols].agg(aggs)
     return out.reset_index()
 
 

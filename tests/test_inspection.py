@@ -56,3 +56,11 @@ def test_grouped_numeric_summary_aggregates():
     grouped = grouped_numeric_summary(_df(), group_cols="kind", value_cols="value")
     assert ("value", "count") in grouped.columns
     assert ("value", "mean") in grouped.columns
+
+
+def test_grouped_numeric_summary_coerces_object_column():
+    df = pd.DataFrame({"kind": ["x", "x", "y"], "value": ["1.0", "2.0", "bad"]})
+    grouped = grouped_numeric_summary(df, "kind", "value")
+    means = dict(zip(grouped["kind"], grouped[("value", "mean")]))
+    assert means["x"] == 1.5
+    assert pd.isna(means["y"])
